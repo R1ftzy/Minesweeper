@@ -118,12 +118,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.cursor.x++
 				}
 			case "space", "enter":
-				m.grid[m.cursor.x][m.cursor.y].hidden = false
-				if m.grid[m.cursor.x][m.cursor.y].isBomb && !m.grid[m.cursor.x][m.cursor.y].flag {
-					m.gameover = true
-					for i := range m.n {
-						for j := range m.n {
-							m.grid[i][j].hidden = false
+				if !m.gameover && !m.win {
+					m.grid = floodFill(m.grid, m.cursor.x, m.cursor.y, m.n)
+					if m.grid[m.cursor.x][m.cursor.y].isBomb && !m.grid[m.cursor.x][m.cursor.y].flag {
+						m.gameover = true
+						for i := range m.n {
+							for j := range m.n {
+								m.grid[i][j].hidden = false
+							}
 						}
 					}
 				}
@@ -164,7 +166,7 @@ func (m model) View() string {
 		}
 	} else {
 		if m.win {
-			status += "Congratulations Nerd\n\n"
+			s += " Congratulations Nerd "
 		} else {
 			if m.gameover {
 				status += "GAME OVER\nSKILL ISSUE\n\n"
@@ -258,17 +260,43 @@ func (d Difficulty) String() string {
 	return "Unknown"
 }
 func (m model) checkWin() bool {
-	if m.flagcount != 0 || m.gameover {
+	if m.gameover {
 		return false
 	}
 	for i := range m.n {
 		for j := range m.n {
-			if m.grid[i][j].hidden && !m.grid[i][j].flag {
+			if !m.grid[i][j].isBomb && m.grid[i][j].hidden {
 				return false
 			}
 		}
 	}
 	return true
+}
+
+func floodFill(grid [][]Cell, x, y, n int) [][]Cell {
+	if x >= n || y >= n || x < 0 || y < 0 {
+		return grid
+	}
+	if !grid[x][y].hidden || grid[x][y].flag {
+		return grid
+	}
+	if grid[x][y].hidden && grid[x][y].isBomb {
+		return grid
+	}
+	if grid[x][y].hidden && grid[x][y].number != 0 {
+		grid[x][y].hidden = false
+		return grid
+	}
+	grid[x][y].hidden = false
+	grid = floodFill(grid, x+1, y, n)
+	grid = floodFill(grid, x+1, y+1, n)
+	grid = floodFill(grid, x+1, y-1, n)
+	grid = floodFill(grid, x, y+1, n)
+	grid = floodFill(grid, x, y-1, n)
+	grid = floodFill(grid, x-1, y, n)
+	grid = floodFill(grid, x-1, y+1, n)
+	grid = floodFill(grid, x-1, y-1, n)
+	return grid
 }
 
 func placeBomb(n int, bomb_count int, grid [][]Cell) [][]Cell {

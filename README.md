@@ -1,6 +1,6 @@
 # Minesweeper
 
-A tui minesweeper game built with Go and Bubbletea.
+Epic tui minesweeper game built with Go and Bubbletea V1.
 
 ## Requirements
 
