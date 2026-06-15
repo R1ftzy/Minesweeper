@@ -128,15 +128,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 				}
 			case "f", "p":
-				if m.grid[m.cursor.x][m.cursor.y].flag == true {
-					m.grid[m.cursor.x][m.cursor.y].flag = false
-					m.grid[m.cursor.x][m.cursor.y].hidden = true
-					m.flagcount++
-				} else {
-					if m.flagcount != 0 {
-						m.grid[m.cursor.x][m.cursor.y].flag = true
-						m.grid[m.cursor.x][m.cursor.y].hidden = false
-						m.flagcount--
+				if !m.gameover && !m.win {
+					if m.grid[m.cursor.x][m.cursor.y].flag == true {
+						m.grid[m.cursor.x][m.cursor.y].flag = false
+						m.grid[m.cursor.x][m.cursor.y].hidden = true
+						m.flagcount++
+					} else {
+						if m.flagcount != 0 {
+							m.grid[m.cursor.x][m.cursor.y].flag = true
+							m.grid[m.cursor.x][m.cursor.y].hidden = false
+							m.flagcount--
+						}
 					}
 				}
 			}
@@ -240,7 +242,7 @@ func (m model) View() string {
 		}
 	}
 	status += lipgloss.NewStyle().BorderForeground(lipgloss.Color("67")).BorderStyle(lipgloss.RoundedBorder()).Render(s)
-	status += "\nUse arror keys for navigation.\nPress r to reset.\nPress q to quit.\n"
+	status += "\nUse arror keys for navigation.\nPress p or f to flag.\nPress r to reset.\nPress q to quit.\n"
 
 	return status
 }
