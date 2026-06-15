@@ -244,7 +244,7 @@ func (m model) View() string {
 		}
 	}
 	status += lipgloss.NewStyle().BorderForeground(lipgloss.Color("67")).BorderStyle(lipgloss.RoundedBorder()).Render(s)
-	status += "\nUse arror keys for navigation.\nPress p or f to flag.\nPress r to reset.\nPress q to quit.\n"
+	status += "\nUse arrow keys for navigation.\nPress p or f to flag.\nPress r to reset.\nPress q to quit.\n"
 
 	return status
 }
