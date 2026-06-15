@@ -11,7 +11,7 @@ A tui minesweeper game built with Go and Bubbletea.
 Clone the repo and run:
 
 ```
-git clone https://github.com/YOUR_USERNAME/minesweeper
+git clone https://github.com/R1ftzy/Minesweeper
 cd minesweeper
 go run .
 ```
